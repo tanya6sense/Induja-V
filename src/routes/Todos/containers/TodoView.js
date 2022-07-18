@@ -37,44 +37,23 @@ const TodoViewComponent = ({
   addTodo,
   handleSubmit,
   reset,
+  deleteTodo,
 }) => {
 
   React.useEffect(() => {
     load();
   }, []);
 
+  const [sortSelected, setSortSelected] = React.useState('none');
+
+  console.log('toto viewre -rendered');
+
+  const onSort = (e) => {
+    setSortSelected
+  }
+
   return (
     <Col xs={12}>
-      <Row center="xs">
-        <h2>
-          <b>
-            Completed
-          </b>
-        </h2>
-      </Row>
-      <Row center="xs">
-        <TodoList
-          className={styles.stateContent}
-          todos={completedTodos}
-          toggle={toggleTodo}
-          loading={loading}
-        />
-      </Row>
-      <Row center="xs">
-        <h2>
-          <b>
-            Incomplete
-          </b>
-        </h2>
-      </Row>
-      <Row center="xs">
-        <TodoList
-          className={styles.stateContent}
-          todos={incompleteTodos}
-          toggle={toggleTodo}
-          loading={loading}
-        />
-      </Row>
       <Row center="xs">
         <form
           onSubmit={handleSubmit((values) => {
@@ -97,7 +76,7 @@ const TodoViewComponent = ({
                   }}
                   placeholder="Enter to Add Todo (hint try 1 char)"
                   validate={[
-                    errors.notIn(completedTodos.map((t) => t.name)),
+                    errors.notIn(incompleteTodos.map((t) => t.name)),
                     errors.isRequired,
                     errors.alphanumerical,
                     errors.minLength(2),
@@ -112,6 +91,51 @@ const TodoViewComponent = ({
           </div>
         </form>
       </Row>
+      <Row center="xs">
+        <span>Sort By</span>
+        <select value={sortSelected} id="sel" onChange={}>
+          <option value="none" selected={sortSelected === 'none'}>None</option>
+          <option value="asc" selected={sortSelected === 'none'}>Acsending</option>
+          <option value="dsc" selected={sortSelected === 'none'}> </option>
+        </select>
+      </Row>
+      {/* {!loading } */}
+      <Row center="xs">
+        <Col>
+          <h2>
+            <b>
+              Completed
+            </b>
+          </h2>
+          <TodoList
+            className={styles.stateContent}
+            todos={completedTodos}
+            toggle={toggleTodo}
+            loading={loading}
+            deleteTodo={deleteTodo}
+          />
+        </Col>
+        <Col>
+          <h2>
+            <b>
+              Incomplete
+            </b>
+          </h2>
+          <TodoList
+            className={styles.stateContent}
+            todos={incompleteTodos}
+            toggle={toggleTodo}
+            loading={loading}
+            deleteTodo={deleteTodo}
+          />
+        </Col>
+
+      </Row>
+      {/* <Row center="xs">
+      </Row> */}
+      {/* <Row center="xs" />
+      <Row center="xs" /> */}
+
     </Col>
   );
 };
@@ -123,18 +147,20 @@ TodoViewComponent.propTypes = {
   load: PropTypes.func,
   loading: PropTypes.bool,
   addTodo: PropTypes.func,
+  deleteTodo: PropTypes.func,
   handleSubmit: PropTypes.func,
   reset: PropTypes.func,
 };
 
 const mapStateToProps = (state) => ({
-  completedTodos: [...completedTodosSelector(state)],
-  incompleteTodos: [...incompleteTodosSelector(state)],
+  completedTodos: completedTodosSelector(state),
+  incompleteTodos: incompleteTodosSelector(state),
   ...contextSelector(state),
 });
 const dispatchToProps = {
   load: actions.load,
   addTodo: actions.addTodo,
+  deleteTodo: actions.deleteTodo,
   toggleTodo: actions.toggleTodo,
 };
 export const TodoView = compose(

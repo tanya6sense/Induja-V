@@ -5,14 +5,16 @@ import { Spin } from 'antd';
 import { Todo } from './Todo';
 
 function TodoList(props) {
-  const { todos, toggle, loading } = props;
-
-  if (todos.length === 0) {
-    return <div>There is nothing here</div>;
-  }
+  const {
+ todos, toggle, loading, deleteTodo,
+} = props;
 
   if (loading) {
     return (<Spin size="default" />);
+  }
+
+  if (todos.length === 0) {
+    return <div>There is nothing here</div>;
   }
 
   console.log('Rendering todos list');
@@ -23,22 +25,24 @@ function TodoList(props) {
     } = todo;
     return (
       <Todo
-        key={created}
+        key={id}
         name={name}
         toggle={toggle}
         id={id}
         completed={completed}
         created={created}
+        deleteTodo={deleteTodo}
       />
     );
   });
 
   return (
-    <Col xs={12}>
-      <Row center="xs">
+    <Row center="xs">
+      <Col>
         {renderTodos}
-      </Row>
-    </Col>
+      </Col>
+    </Row>
+
   );
 }
 
@@ -46,6 +50,7 @@ TodoList.propTypes = {
   todos: PropTypes.arrayOf(PropTypes.object),
   toggle: PropTypes.func,
   loading: PropTypes.bool,
+  deleteTodo: PropTypes.func,
 };
 
 export default React.memo(TodoList);
