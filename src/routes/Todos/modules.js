@@ -12,6 +12,12 @@ const initialState = {
 
 const TOGGLE_TODO = 'todo/manage/TOGGLE_TODO';
 
+const SORT_TODO = 'todo/manage/SORT_TODO';
+
+function sortTodo(sort_type) {
+  return { type: SORT_TODO, sort_type };
+}
+
 function toggleTodo(id) {
   return { type: TOGGLE_TODO, id };
 }
@@ -38,6 +44,7 @@ const LOAD_TODOS_SUCCESS = 'todo/manage/LOAD_TODOS_SUCCESS';
 const LOAD_TODOS_FAIL = 'todo/manage/LOAD_TODOS_FAIL';
 
 const ADD_TODO = 'todo/manage/ADD_TODO';
+const DEL_TODO = 'todo/manage/DEL_TODO';
 
 function load() {
   return { type: LOAD_TODOS };
@@ -53,6 +60,10 @@ function loadFail(error) {
 
 function addTodo(todo) {
   return { type: ADD_TODO, id: Math.random(), todo };
+}
+
+function deleteTodo(id) {
+  return { type: DEL_TODO, id };
 }
 
 function ManageReducer(state = initialState, action) {
@@ -87,11 +98,33 @@ function ManageReducer(state = initialState, action) {
         ],
       };
     }
+    case DEL_TODO: {
+      const { id } = action;
+
+      return {
+        ...state,
+        todos: state.todos.filter((todo) => todo.id !== id),
+      };
+    }
     case TOGGLE_TODO: {
       const { todos } = state;
       return {
         ...state,
         todos: todos.map((todo) => toggleTodoReducer(todo, action)),
+      };
+    }
+
+    case SORT_TODO: {
+      const { sort_type } = action;
+      return {
+        ...state,
+        todos: state.todos.sort((a, b) => {
+          if (sort_type === 'asc') {
+            return a.name < b.name;
+          }
+          return b.name < a.name;
+
+        }),
       };
     }
     default:
@@ -101,10 +134,12 @@ function ManageReducer(state = initialState, action) {
 
 export const actions = {
   addTodo,
+  deleteTodo,
   load,
   loadSuccess,
   loadFail,
   toggleTodo,
+  sortTodo,
 };
 
 export const actionTypes = {

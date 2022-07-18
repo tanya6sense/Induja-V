@@ -7,6 +7,7 @@ import styles from './Todo.module.scss';
 export function Todo(props) {
   const {
  name, completed, id, toggle, created,
+ deleteTodo,
 } = props;
 
   const toggleTodo = () => toggle(id);
@@ -20,6 +21,8 @@ export function Todo(props) {
           {created}
         </div>
         <Checkbox checked={completed} onChange={toggleTodo} />
+
+        <span onKeyDown={() => {}} onClick={() => { deleteTodo(id); }}> X</span>
       </Row>
     </Card>
   );
@@ -31,4 +34,5 @@ Todo.propTypes = {
   id: PropTypes.number,
   toggle: PropTypes.func,
   created: PropTypes.string,
+  deleteTodo: PropTypes.func,
 };
